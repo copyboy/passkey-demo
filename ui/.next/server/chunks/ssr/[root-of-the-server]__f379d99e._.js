@@ -12,7 +12,7 @@ __turbopack_context__.s([
     "apiClient",
     ()=>apiClient
 ]);
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = 'http://localhost:3001/api';
 class ApiClient {
     async request(endpoint, options = {}) {
         const url = `${API_BASE_URL}${endpoint}`;

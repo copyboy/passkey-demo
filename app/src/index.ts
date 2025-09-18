@@ -4,16 +4,16 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import apiRoutes from './routes';
 import { AuthService } from './services/auth';
-import { config, getServerUrl, getApiUrl } from './config';
 import * as crypto from 'crypto';
 
 const app: Express = express();
+const PORT = process.env.PORT || 3001;
 
 // 中间件
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || config.cors.origins,
-  credentials: config.cors.credentials
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  credentials: true
 }));
 app.use(cookieParser());
 app.use(express.json());
@@ -55,11 +55,10 @@ app.use((_req, res) => {
 });
 
 // 启动服务器
-const server = app.listen(config.server.port, config.server.host, () => {
-  console.log(`🚀 Server running on ${getServerUrl()}`);
-  console.log(`📝 Health check: ${getApiUrl()}/health`);
-  console.log(`🔧 API Base URL: ${getApiUrl()}`);
-  console.log(`🌐 Local access: http://localhost:${config.server.port}/api/health`);
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📝 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🔧 API Base URL: http://localhost:${PORT}/api`);
   
   // 确保 WebCrypto API 可用
   if (!crypto.webcrypto || !crypto.webcrypto.getRandomValues) {
@@ -89,6 +88,6 @@ setInterval(async () => {
   } catch (error) {
     console.error('Error during cleanup:', error);
   }
-}, config.storage.cleanupInterval);
+}, 60 * 60 * 1000); // 每小时清理一次
 
 export default app;

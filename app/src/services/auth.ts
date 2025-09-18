@@ -1,4 +1,5 @@
 import { randomBytes } from 'crypto';
+import { config } from '../config';
 import { UserStorage, CredentialStorage, ChallengeStorage, SessionStorage } from '../storage';
 import { User, Credential, Challenge, Session, AttestationConveyancePreference, UserVerificationRequirement } from '../types';
 
@@ -65,8 +66,8 @@ export class AuthService {
     const options = {
       challenge: challenge, // 发送 base64url 格式
       rp: {
-        name: 'Passkey Demo',
-        id: 'localhost'
+        name: config.webauthn.rpName,
+        id: config.webauthn.rpId
       },
       user: {
         id: userId, // 发送 base64url 格式
@@ -77,7 +78,7 @@ export class AuthService {
         { type: 'public-key', alg: -7 }, // ES256
         { type: 'public-key', alg: -257 } // RS256
       ],
-      timeout: 60000,
+      timeout: config.webauthn.timeout,
       excludeCredentials: [],
       authenticatorSelection: {
         authenticatorAttachment: 'platform',
@@ -265,7 +266,7 @@ export class AuthService {
       }
       
       // 验证 origin
-      if (clientData.origin !== 'http://localhost:3000') {
+      if (!config.webauthn.allowedOrigins.includes(clientData.origin)) {
         throw new Error('Origin 不匹配');
       }
       
@@ -328,10 +329,10 @@ export class AuthService {
 
     const options = {
       challenge: challenge, // 发送 base64url 格式
-      rpId: 'localhost',
+      rpId: config.webauthn.rpId,
       allowCredentials,
       userVerification: 'required' as UserVerificationRequirement,
-      timeout: 60000,
+      timeout: config.webauthn.timeout,
       // 添加authenticator选择配置，确保只使用平台内建authenticator
       authenticatorSelection: {
         authenticatorAttachment: 'platform',
@@ -438,7 +439,7 @@ export class AuthService {
       }
       
       // 验证 origin
-      if (clientData.origin !== 'http://localhost:3000') {
+      if (!config.webauthn.allowedOrigins.includes(clientData.origin)) {
         throw new Error('Origin 不匹配');
       }
       

@@ -8,7 +8,7 @@ export declare class AuthService {
     generateRegistrationOptions(username: string): Promise<{
         challenge: string;
         rp: {
-            name: string;
+            name: "Passkey Demo";
             id: string;
         };
         user: {
@@ -20,7 +20,7 @@ export declare class AuthService {
             type: string;
             alg: number;
         }[];
-        timeout: number;
+        timeout: 60000;
         excludeCredentials: never[];
         authenticatorSelection: {
             authenticatorAttachment: string;
@@ -47,7 +47,7 @@ export declare class AuthService {
             transports: readonly ["internal"];
         }[];
         userVerification: UserVerificationRequirement;
-        timeout: number;
+        timeout: 60000;
         authenticatorSelection: {
             authenticatorAttachment: string;
             userVerification: string;

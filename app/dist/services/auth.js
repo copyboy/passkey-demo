@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const crypto_1 = require("crypto");
+const config_1 = require("../config");
 const storage_1 = require("../storage");
 if (typeof globalThis.crypto === 'undefined') {
     const { webcrypto } = require('crypto');
@@ -43,8 +44,8 @@ class AuthService {
         const options = {
             challenge: challenge,
             rp: {
-                name: 'Passkey Demo',
-                id: 'localhost'
+                name: config_1.config.webauthn.rpName,
+                id: config_1.config.webauthn.rpId
             },
             user: {
                 id: userId,
@@ -55,7 +56,7 @@ class AuthService {
                 { type: 'public-key', alg: -7 },
                 { type: 'public-key', alg: -257 }
             ],
-            timeout: 60000,
+            timeout: config_1.config.webauthn.timeout,
             excludeCredentials: [],
             authenticatorSelection: {
                 authenticatorAttachment: 'platform',
@@ -192,7 +193,7 @@ class AuthService {
             if (clientData.challenge !== expectedChallenge) {
                 throw new Error('Challenge 不匹配');
             }
-            if (clientData.origin !== 'http://localhost:3000') {
+            if (!config_1.config.webauthn.allowedOrigins.includes(clientData.origin)) {
                 throw new Error('Origin 不匹配');
             }
             if (clientData.type !== 'webauthn.create') {
@@ -235,10 +236,10 @@ class AuthService {
         }));
         const options = {
             challenge: challenge,
-            rpId: 'localhost',
+            rpId: config_1.config.webauthn.rpId,
             allowCredentials,
             userVerification: 'required',
-            timeout: 60000,
+            timeout: config_1.config.webauthn.timeout,
             authenticatorSelection: {
                 authenticatorAttachment: 'platform',
                 userVerification: 'required'
@@ -304,7 +305,7 @@ class AuthService {
             if (clientData.challenge !== expectedChallenge) {
                 throw new Error('Challenge 不匹配');
             }
-            if (clientData.origin !== 'http://localhost:3000') {
+            if (!config_1.config.webauthn.allowedOrigins.includes(clientData.origin)) {
                 throw new Error('Origin 不匹配');
             }
             if (clientData.type !== 'webauthn.get') {

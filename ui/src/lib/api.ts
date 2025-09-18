@@ -1,6 +1,6 @@
 import { RegisterRequest, LoginRequest, AuthResponse, RegistrationOptions, AuthenticationOptions, ErrorResponse, User } from '../types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.203.123:3001/api';
 
 class ApiClient {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {

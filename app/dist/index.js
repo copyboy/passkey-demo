@@ -42,13 +42,13 @@ const helmet_1 = __importDefault(require("helmet"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const routes_1 = __importDefault(require("./routes"));
 const auth_1 = require("./services/auth");
+const config_1 = require("./config");
 const crypto = __importStar(require("crypto"));
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 3001;
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true
+    origin: process.env.FRONTEND_URL || config_1.config.cors.origins,
+    credentials: config_1.config.cors.credentials
 }));
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
@@ -78,10 +78,11 @@ app.use((_req, res) => {
         }
     });
 });
-const server = app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📝 Health check: http://localhost:${PORT}/api/health`);
-    console.log(`🔧 API Base URL: http://localhost:${PORT}/api`);
+const server = app.listen(config_1.config.server.port, config_1.config.server.host, () => {
+    console.log(`🚀 Server running on ${(0, config_1.getServerUrl)()}`);
+    console.log(`📝 Health check: ${(0, config_1.getApiUrl)()}/health`);
+    console.log(`🔧 API Base URL: ${(0, config_1.getApiUrl)()}`);
+    console.log(`🌐 Local access: http://localhost:${config_1.config.server.port}/api/health`);
     if (!crypto.webcrypto || !crypto.webcrypto.getRandomValues) {
         console.error('WebCrypto API is not available. WebAuthn will not work properly.');
     }
@@ -107,6 +108,6 @@ setInterval(async () => {
     catch (error) {
         console.error('Error during cleanup:', error);
     }
-}, 60 * 60 * 1000);
+}, config_1.config.storage.cleanupInterval);
 exports.default = app;
 //# sourceMappingURL=index.js.map
